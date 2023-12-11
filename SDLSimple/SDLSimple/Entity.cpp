@@ -24,6 +24,8 @@ Entity::Entity()
     m_movement = glm::vec3(0.0f);
     m_speed = 0;
     m_model_matrix = glm::mat4(1.0f);
+    
+    
 }
 
 Entity::~Entity()
@@ -81,9 +83,6 @@ void Entity::ai_activate(Entity* player)
         ai_walk();
         break;
 
-    case GUARD:
-        ai_guard(player);
-        break;
 
     default:
         break;
@@ -92,45 +91,95 @@ void Entity::ai_activate(Entity* player)
 
 void Entity::ai_walk()
 {
-    m_movement = glm::vec3(-1.0f, 0.0f, 0.0f);
-}
-
-void Entity::ai_guard(Entity* player)
-{
     switch (m_ai_state) {
-    case IDLE:
-        if (glm::distance(m_position, player->get_position()) < 3.0f) m_ai_state = WALKING;
+    
+    case GO_LEFT:
+            move_left();
+            m_animation_indices = m_walking[LEFT];
+            
+            if(this->m_collided_left){
+                int number = (rand() % 3) + 1;
+                if(number == 1){
+                    m_ai_state = GO_RIGHT;
+                }
+                else if(number == 2){
+                    m_ai_state = GO_UP;
+                }else{
+                    m_ai_state = GO_DOWN;
+                }
+            }
         break;
 
-    case WALKING:
-        if (m_position.x > player->get_position().x) {
-            m_movement = glm::vec3(-1.0f, 0.0f, 0.0f);
-        }
-        else {
-            m_movement = glm::vec3(1.0f, 0.0f, 0.0f);
-        }
+    case GO_RIGHT:
+            move_right();
+            m_animation_indices = m_walking[RIGHT];
+            if(this->m_collided_right){
+                int number = (rand() % 3) + 1;
+                if(number == 1){
+                    m_ai_state = GO_LEFT;
+                }
+                else if(number == 2){
+                    m_ai_state = GO_UP;
+                }else{
+                    m_ai_state = GO_DOWN;
+                }
+               
+            }
+        break;
+    case GO_UP:
+            move_up();
+            m_animation_indices = m_walking[UP];
+            if(this->m_collided_top){
+                int number = (rand() % 3) + 1;
+                if(number == 1){
+                    m_ai_state = GO_LEFT;
+                }
+                else if(number == 2){
+                    m_ai_state = GO_UP;
+                }else{
+                    m_ai_state = GO_DOWN;
+                }
+            }
+            
         break;
 
-    case ATTACKING:
+    case GO_DOWN:
+            move_down();
+            m_animation_indices = m_walking[DOWN];
+            if(this->m_collided_top){
+                int number = (rand() % 3) + 1;
+                if(number == 1){
+                    m_ai_state = GO_LEFT;
+                }
+                else if(number == 2){
+                    m_ai_state = GO_RIGHT;
+                }else{
+                    m_ai_state = GO_UP;
+                }
+            }
         break;
 
     default:
         break;
     }
+    
 }
+
+
 
 
 void Entity::update(float delta_time, Entity* player, Entity* objects, int object_count, Map* map)
 {
     if (!m_is_active) return;
 
+    
+
+    if (m_entity_type == ENEMY) ai_activate(player);
+    
     m_collided_top = false;
     m_collided_bottom = false;
     m_collided_left = false;
     m_collided_right = false;
-
-    if (m_entity_type == ENEMY) ai_activate(player);
-
     if (m_animation_indices != NULL)
     {
         if (glm::length(m_movement) != 0)
@@ -152,27 +201,26 @@ void Entity::update(float delta_time, Entity* player, Entity* objects, int objec
     }
 
     m_velocity.x = m_movement.x * m_speed;
-    m_velocity += m_acceleration * delta_time;
+    m_velocity.y = m_movement.y * m_speed;
 
     // We make two calls to our check_collision methods, one for the collidable objects and one for
     // the map.
     m_position.y += m_velocity.y * delta_time;
+    
     check_collision_y(objects, object_count);
-    check_collision_y(map);
+//    check_collision_y(map);
 
     m_position.x += m_velocity.x * delta_time;
     check_collision_x(objects, object_count);
-    check_collision_x(map);
+//    check_collision_x(map);
+    
+    
 
-    if (m_is_jumping)
-    {
-        m_is_jumping = false;
-
-        m_velocity.y += m_jumping_power;
-    }
+   
 
     m_model_matrix = glm::mat4(1.0f);
     m_model_matrix = glm::translate(m_model_matrix, m_position);
+    m_model_matrix = glm::scale(m_model_matrix, m_scale);
 }
 
 void const Entity::check_collision_y(Entity* collidable_entities, int collidable_entity_count)
@@ -183,6 +231,10 @@ void const Entity::check_collision_y(Entity* collidable_entities, int collidable
 
         if (check_collision(collidable_entity))
         {
+            if(collidable_entity->get_ai_type() == DOT){
+                dot_count--;
+                collidable_entity->deactivate();
+            }
             float y_distance = fabs(m_position.y - collidable_entity->get_position().y);
             float y_overlap = fabs(y_distance - (m_height / 2.0f) - (collidable_entity->get_height() / 2.0f));
             if (m_velocity.y > 0) {
@@ -207,6 +259,10 @@ void const Entity::check_collision_x(Entity* collidable_entities, int collidable
 
         if (check_collision(collidable_entity))
         {
+            if(collidable_entity->get_ai_type() == DOT){
+                dot_count--;
+                collidable_entity->deactivate();
+            }
             float x_distance = fabs(m_position.x - collidable_entity->get_position().x);
             float x_overlap = fabs(x_distance - (m_width / 2.0f) - (collidable_entity->get_width() / 2.0f));
             if (m_velocity.x > 0) {
@@ -312,6 +368,7 @@ void Entity::render(ShaderProgram* program)
 
     if (m_animation_indices != NULL)
     {
+        
         draw_sprite_from_texture_atlas(program, m_texture_id, m_animation_indices[m_animation_index]);
         return;
     }
@@ -340,7 +397,7 @@ bool const Entity::check_collision(Entity* other) const
     if (!m_is_active || !other->m_is_active) return false;
 
     float x_distance = fabs(m_position.x - other->m_position.x) - ((m_width + other->m_width) / 2.0f);
-    float y_distance = fabs(m_position.y - other->m_position.y) - ((m_height + other->m_height) / 2.0f);
+    float y_distance = fabs(m_position.y - other->m_position.y) - ((m_height  + other->m_height ) / 2.0f);
 
     return x_distance < 0.0f && y_distance < 0.0f;
 }

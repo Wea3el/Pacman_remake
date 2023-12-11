@@ -1,9 +1,9 @@
 #define GL_SILENCE_DEPRECATION
 #define GL_GLEXT_PROTOTYPES 1
 #define FIXED_TIMESTEP 0.0166666f
-#define LEVEL1_WIDTH 14
-#define LEVEL1_HEIGHT 8
-#define LEVEL1_LEFT_EDGE 5.0f
+#define LEVEL_WIDTH 25
+#define LEVEL_HEIGHT 19
+
 
 #ifdef _WINDOWS
 #include <GL/glew.h>
@@ -93,6 +93,7 @@ void initialise()
     g_shader_program.load(V_SHADER_PATH, F_SHADER_PATH);
 
     g_view_matrix = glm::mat4(1.0f);
+    g_view_matrix = glm::translate(g_view_matrix, glm::vec3(-5, 3.75, 0));
     g_projection_matrix = glm::ortho(-5.0f, 5.0f, -3.75f, 3.75f, -1.0f, 1.0f);
 
     g_shader_program.set_projection_matrix(g_projection_matrix);
@@ -100,7 +101,7 @@ void initialise()
 
     glUseProgram(g_shader_program.get_program_id());
 
-    glClearColor(BG_RED, BG_BLUE, BG_GREEN, BG_OPACITY);
+    glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
     
     // enable blending
     glEnable(GL_BLEND);
@@ -141,14 +142,6 @@ void process_input()
                         g_game_is_running = false;
                         break;
                         
-                    case SDLK_SPACE:
-                        // Jump
-                        if (g_current_scene->m_state.player->m_collided_bottom)
-                        {
-                            g_current_scene->m_state.player->m_is_jumping = true;
-                            Mix_PlayChannel(-1, g_current_scene->m_state.jump_sfx, 0);
-                        }
-                        break;
                         
                     default:
                         break;
@@ -170,6 +163,16 @@ void process_input()
     {
         g_current_scene->m_state.player->move_right();
         g_current_scene->m_state.player->m_animation_indices = g_current_scene->m_state.player->m_walking[g_current_scene->m_state.player->RIGHT];
+    }
+    else if (key_state[SDL_SCANCODE_UP])
+    {
+        g_current_scene->m_state.player->move_up();
+        g_current_scene->m_state.player->m_animation_indices = g_current_scene->m_state.player->m_walking[g_current_scene->m_state.player->UP];
+    }
+    else if (key_state[SDL_SCANCODE_DOWN])
+    {
+        g_current_scene->m_state.player->move_down();
+        g_current_scene->m_state.player->m_animation_indices = g_current_scene->m_state.player->m_walking[g_current_scene->m_state.player->DOWN];
     }
     
     if (glm::length(g_current_scene->m_state.player->get_movement()) > 1.0f)
@@ -194,27 +197,21 @@ void update()
     
     while (delta_time >= FIXED_TIMESTEP) {
         g_current_scene->update(FIXED_TIMESTEP);
-        
-        
-
-        
         g_is_colliding_bottom = g_current_scene->m_state.player->m_collided_bottom;
         
         delta_time -= FIXED_TIMESTEP;
     }
-    
+    if(g_current_scene->m_state.player->get_position().x <0.0f){
+        g_current_scene->m_state.player->set_position(glm::vec3(10.0,-3.0,1.0));
+    }
+    else if(g_current_scene->m_state.player->get_position().x >10.0f){
+        g_current_scene->m_state.player->set_position(glm::vec3(0.0,-3.0,1.0));
+    }
     g_accumulator = delta_time;
     
-    // Prevent the camera from showing anything outside of the "edge" of the level
-    g_view_matrix = glm::mat4(1.0f);
-    
-    if (g_current_scene->m_state.player->get_position().x > LEVEL1_LEFT_EDGE) {
-        g_view_matrix = glm::translate(g_view_matrix, glm::vec3(-g_current_scene->m_state.player->get_position().x, 3.75, 0));
-    } else {
-        g_view_matrix = glm::translate(g_view_matrix, glm::vec3(-5, 3.75, 0));
-    }
-    
+   
     if (g_current_scene == g_levelA && g_current_scene->m_state.player->get_position().y < -10.0f) switch_to_scene(g_levelB);
+    
     
     
 }

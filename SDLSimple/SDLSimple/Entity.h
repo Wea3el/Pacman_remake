@@ -1,9 +1,10 @@
 #pragma once
 #include "Map.h"
 
-enum EntityType { PLATFORM, PLAYER, ENEMY };
-enum AIType     { WALKER, GUARD };
-enum AIState    { WALKING, IDLE, ATTACKING };
+enum EntityType { PLATFORM, PLAYER, ENEMY};
+enum AIType     { WALKER, GUARD, DOT, POWERUP  };
+enum AIState    {IDLE, GO_LEFT, GO_RIGHT, GO_UP, GO_DOWN };
+
 
 class Entity
 {
@@ -25,6 +26,7 @@ private:
     float     m_speed;
     glm::vec3 m_movement;
     glm::mat4 m_model_matrix;
+    glm::vec3 m_scale = glm::vec3(0.3f, 0.3f,0.0f);
 
 
     // ————— ENEMY AI ————— //
@@ -38,6 +40,7 @@ private:
 
 public:
     // ————— STATIC VARIABLES ————— //
+    int dot_count;
     static const int    SECONDS_PER_FRAME = 4;
     static const int    LEFT    = 0,
                         RIGHT   = 1,
@@ -122,6 +125,7 @@ public:
     void const set_movement(glm::vec3 new_movement)         { m_movement = new_movement;            };
     void const set_velocity(glm::vec3 new_velocity)         { m_velocity = new_velocity;            };
     void const set_speed(float new_speed)                   { m_speed = new_speed;                  };
+    void const set_scale(glm::vec3 new_scale)               { m_scale = new_scale;};
     void const set_jumping_power(float new_jumping_power)   { m_jumping_power = new_jumping_power;  };
     void const set_acceleration(glm::vec3 new_acceleration) { m_acceleration = new_acceleration;    };
     void const set_width(float new_width)                   { m_width = new_width;                  };

@@ -108,7 +108,7 @@ void Lose::initialise()
     m_state.enemies[0].set_position(glm::vec3(4.0f, 10.0f, 0.0f));
     m_state.enemies[0].set_entity_type(ENEMY);
     m_state.enemies[0].set_ai_type(GUARD);
-    m_state.enemies[0].set_ai_state(IDLE);
+    
     m_state.enemies[0].m_texture_id = enemy1_texture_id;
     
    
@@ -117,7 +117,7 @@ void Lose::initialise()
     m_state.enemies[1].set_position(glm::vec3(10.0f, 0.0f, 0.0f));
     m_state.enemies[1].set_entity_type(ENEMY);
     m_state.enemies[1].set_ai_type(WALKER);
-    m_state.enemies[1].set_ai_state(WALKING);
+    
     m_state.enemies[1].m_texture_id = enemy3_texture_id;
    
     
