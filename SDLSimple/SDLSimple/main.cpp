@@ -24,6 +24,8 @@
 #include "Scene.h"
 #include "LevelA.h"
 #include "LevelB.h"
+#include "Win.h"
+#include "Lose.h"
 
 
 // ––––– CONSTANTS ––––– //
@@ -50,10 +52,12 @@ const float MILLISECONDS_IN_SECOND = 1000.0;
 Scene  *g_current_scene;
 LevelA *g_levelA;
 LevelB *g_levelB;
+Win *win;
+Lose *lose;
 
 
 
-Scene   *g_levels[2];
+Scene   *g_levels[4];
 
 SDL_Window* g_display_window;
 bool g_game_is_running = true;
@@ -93,9 +97,9 @@ void initialise()
     g_shader_program.load(V_SHADER_PATH, F_SHADER_PATH);
 
     g_view_matrix = glm::mat4(1.0f);
-    g_view_matrix = glm::translate(g_view_matrix, glm::vec3(-5, 3.75, 0));
-    g_projection_matrix = glm::ortho(-5.0f, 5.0f, -3.75f, 3.75f, -1.0f, 1.0f);
-
+    
+    g_projection_matrix = glm::ortho(-12.5f, 12.5f, -9.5f, 9.5f, -2.0f, 2.0f);
+    g_view_matrix = glm::translate(g_view_matrix, glm::vec3(-13, 10 , 0));
     g_shader_program.set_projection_matrix(g_projection_matrix);
     g_shader_program.set_view_matrix(g_view_matrix);
 
@@ -109,9 +113,12 @@ void initialise()
 
     g_levelA = new LevelA();
     g_levelB = new LevelB();
-    
+    win = new Win();
+    lose = new Lose();
     g_levels[0] = g_levelA;
-    g_levels[1] = g_levelB;
+    g_levels[1] = win;
+    g_levels[2] = lose;
+    
     
     // Start at level A
     switch_to_scene(g_levels[0]);
@@ -156,21 +163,25 @@ void process_input()
 
     if (key_state[SDL_SCANCODE_LEFT])
     {
+        
         g_current_scene->m_state.player->move_left();
         g_current_scene->m_state.player->m_animation_indices = g_current_scene->m_state.player->m_walking[g_current_scene->m_state.player->LEFT];
     }
     else if (key_state[SDL_SCANCODE_RIGHT])
     {
+        
         g_current_scene->m_state.player->move_right();
         g_current_scene->m_state.player->m_animation_indices = g_current_scene->m_state.player->m_walking[g_current_scene->m_state.player->RIGHT];
     }
     else if (key_state[SDL_SCANCODE_UP])
     {
+        
         g_current_scene->m_state.player->move_up();
         g_current_scene->m_state.player->m_animation_indices = g_current_scene->m_state.player->m_walking[g_current_scene->m_state.player->UP];
     }
     else if (key_state[SDL_SCANCODE_DOWN])
     {
+        
         g_current_scene->m_state.player->move_down();
         g_current_scene->m_state.player->m_animation_indices = g_current_scene->m_state.player->m_walking[g_current_scene->m_state.player->DOWN];
     }
@@ -201,16 +212,16 @@ void update()
         
         delta_time -= FIXED_TIMESTEP;
     }
-    if(g_current_scene->m_state.player->get_position().x <0.0f){
-        g_current_scene->m_state.player->set_position(glm::vec3(10.0,-3.0,1.0));
-    }
-    else if(g_current_scene->m_state.player->get_position().x >10.0f){
-        g_current_scene->m_state.player->set_position(glm::vec3(0.0,-3.0,1.0));
-    }
+//    if(g_current_scene->m_state.player->get_position().x <0.0f){
+//        g_current_scene->m_state.player->set_position(glm::vec3(10.0,-3.0,1.0));
+//    }
+//    else if(g_current_scene->m_state.player->get_position().x >10.0f){
+//        g_current_scene->m_state.player->set_position(glm::vec3(0.0,-3.0,1.0));
+//    }
     g_accumulator = delta_time;
     
    
-    if (g_current_scene == g_levelA && g_current_scene->m_state.player->get_position().y < -10.0f) switch_to_scene(g_levelB);
+   
     
     
     

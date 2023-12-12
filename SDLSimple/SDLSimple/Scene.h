@@ -21,10 +21,13 @@ struct GameState
     Map    *map;
     Entity *player;
     Entity *enemies;
-    Entity *dots;
+    
     
     Mix_Music *bgm;
-    Mix_Chunk *jump_sfx;
+    
+    Mix_Chunk *bgm2;
+    Mix_Chunk *monch_sfx1;
+    
     
     int next_scene_id;
 };
@@ -34,7 +37,7 @@ public:
     int m_number_of_enemies = 4;
     
     GameState m_state;
-    
+    float cur_time = 0;
     virtual void initialise() = 0;
     virtual void update(float delta_time) = 0;
     virtual void render(ShaderProgram *program) = 0;

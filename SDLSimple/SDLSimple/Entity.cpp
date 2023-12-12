@@ -96,17 +96,8 @@ void Entity::ai_walk()
     case GO_LEFT:
             move_left();
             m_animation_indices = m_walking[LEFT];
-            
             if(this->m_collided_left){
-                int number = (rand() % 3) + 1;
-                if(number == 1){
-                    m_ai_state = GO_RIGHT;
-                }
-                else if(number == 2){
-                    m_ai_state = GO_UP;
-                }else{
-                    m_ai_state = GO_DOWN;
-                }
+                m_ai_state = STOP_MOVE;
             }
         break;
 
@@ -114,31 +105,14 @@ void Entity::ai_walk()
             move_right();
             m_animation_indices = m_walking[RIGHT];
             if(this->m_collided_right){
-                int number = (rand() % 3) + 1;
-                if(number == 1){
-                    m_ai_state = GO_LEFT;
-                }
-                else if(number == 2){
-                    m_ai_state = GO_UP;
-                }else{
-                    m_ai_state = GO_DOWN;
-                }
-               
+                m_ai_state = STOP_MOVE;
             }
         break;
     case GO_UP:
             move_up();
             m_animation_indices = m_walking[UP];
             if(this->m_collided_top){
-                int number = (rand() % 3) + 1;
-                if(number == 1){
-                    m_ai_state = GO_LEFT;
-                }
-                else if(number == 2){
-                    m_ai_state = GO_UP;
-                }else{
-                    m_ai_state = GO_DOWN;
-                }
+                m_ai_state = STOP_MOVE;
             }
             
         break;
@@ -146,19 +120,25 @@ void Entity::ai_walk()
     case GO_DOWN:
             move_down();
             m_animation_indices = m_walking[DOWN];
-            if(this->m_collided_top){
-                int number = (rand() % 3) + 1;
-                if(number == 1){
-                    m_ai_state = GO_LEFT;
-                }
-                else if(number == 2){
-                    m_ai_state = GO_RIGHT;
-                }else{
-                    m_ai_state = GO_UP;
-                }
+            if(this->m_collided_bottom){
+                m_ai_state = STOP_MOVE;
             }
         break;
-
+    
+    case STOP_MOVE:
+            dont_move();
+            thing = (rand() % 4) + 1;
+            if(thing == 1){
+                m_ai_state = GO_RIGHT;
+            }
+            else if(thing == 2){
+                m_ai_state = GO_UP;
+            }else if(thing == 3){
+                m_ai_state = GO_DOWN;
+            }else{
+                m_ai_state = GO_LEFT;
+            }
+            break;
     default:
         break;
     }
@@ -207,12 +187,12 @@ void Entity::update(float delta_time, Entity* player, Entity* objects, int objec
     // the map.
     m_position.y += m_velocity.y * delta_time;
     
-    check_collision_y(objects, object_count);
-//    check_collision_y(map);
+    check_collision_y(objects, object_count );
+    check_collision_y(map);
 
     m_position.x += m_velocity.x * delta_time;
     check_collision_x(objects, object_count);
-//    check_collision_x(map);
+    check_collision_x(map);
     
     
 
@@ -234,6 +214,20 @@ void const Entity::check_collision_y(Entity* collidable_entities, int collidable
             if(collidable_entity->get_ai_type() == DOT){
                 dot_count--;
                 collidable_entity->deactivate();
+                eat = true;
+                break;
+            }
+            else if(collidable_entity->get_ai_type() == POWERUP){
+                power = true;
+                dot_count--;
+                collidable_entity->deactivate();
+                break;
+            }else if (power){
+                collidable_entity->set_position(glm::vec3(12.0f,-6.0f,1.0f));
+                break;
+            }else if(!power){
+                die = true;
+                break;
             }
             float y_distance = fabs(m_position.y - collidable_entity->get_position().y);
             float y_overlap = fabs(y_distance - (m_height / 2.0f) - (collidable_entity->get_height() / 2.0f));
@@ -262,6 +256,20 @@ void const Entity::check_collision_x(Entity* collidable_entities, int collidable
             if(collidable_entity->get_ai_type() == DOT){
                 dot_count--;
                 collidable_entity->deactivate();
+                eat = true;
+                break;
+            }
+            else if(collidable_entity->get_ai_type() == POWERUP){
+                power = true;
+                dot_count--;
+                collidable_entity->deactivate();
+                break;
+            }else if (power){
+                collidable_entity->set_position(glm::vec3(13.0f,-8.0f,1.0f));
+                break;
+            }else if(!power){
+                die = true;
+                break;
             }
             float x_distance = fabs(m_position.x - collidable_entity->get_position().x);
             float x_overlap = fabs(x_distance - (m_width / 2.0f) - (collidable_entity->get_width() / 2.0f));

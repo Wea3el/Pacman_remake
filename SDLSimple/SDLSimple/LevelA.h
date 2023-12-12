@@ -6,7 +6,7 @@ public:
     
     ~LevelA();
     
-    int cur = 4;
+    int cur = 0;
     int dot_count;
     void initialise() override;
     void update(float delta_time) override;

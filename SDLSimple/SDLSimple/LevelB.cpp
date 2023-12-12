@@ -21,7 +21,7 @@ LevelB::~LevelB()
     delete [] m_state.enemies;
     delete    m_state.player;
     delete    m_state.map;
-    Mix_FreeChunk(m_state.jump_sfx);
+    Mix_FreeChunk(m_state.monch_sfx);
     Mix_FreeMusic(m_state.bgm);
 }
 
@@ -87,7 +87,7 @@ void LevelB::initialise()
     Mix_PlayMusic(m_state.bgm, -1);
     Mix_VolumeMusic(0.0f);
     
-    m_state.jump_sfx = Mix_LoadWAV("assets/bounce.wav");
+    m_state.monch_sfx = Mix_LoadWAV("assets/pacman_chomp.wav");
 }
 
 void LevelB::update(float delta_time)

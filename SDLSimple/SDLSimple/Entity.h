@@ -3,7 +3,7 @@
 
 enum EntityType { PLATFORM, PLAYER, ENEMY};
 enum AIType     { WALKER, GUARD, DOT, POWERUP  };
-enum AIState    {IDLE, GO_LEFT, GO_RIGHT, GO_UP, GO_DOWN };
+enum AIState    {IDLE, GO_LEFT, GO_RIGHT, GO_UP, GO_DOWN, STOP_MOVE };
 
 
 class Entity
@@ -26,7 +26,7 @@ private:
     float     m_speed;
     glm::vec3 m_movement;
     glm::mat4 m_model_matrix;
-    glm::vec3 m_scale = glm::vec3(0.3f, 0.3f,0.0f);
+    glm::vec3 m_scale = glm::vec3(0.7f, 0.7f,0.0f);
 
 
     // ————— ENEMY AI ————— //
@@ -40,13 +40,19 @@ private:
 
 public:
     // ————— STATIC VARIABLES ————— //
-    int dot_count;
+    int dot_count = 0;
+    bool eat = false;
+    bool die = false;
+    bool power = false;
+    float powerup_time = 0;
+    
+    
     static const int    SECONDS_PER_FRAME = 4;
     static const int    LEFT    = 0,
                         RIGHT   = 1,
                         UP      = 2,
                         DOWN    = 3;
-
+    int thing = 0;
     // ————— ANIMATION ————— //
     int** m_walking = new int* [4]
         {
@@ -96,6 +102,11 @@ public:
     void move_right()   { m_movement.x = 1.0f; };
     void move_up()      { m_movement.y = 1.0f; };
     void move_down()    { m_movement.y = -1.0f; };
+    void dont_move()    {
+        m_movement.x = 0.0f;
+        m_movement.y = 0.0f;
+        
+    };
 
     void ai_activate(Entity* player);
     void ai_walk();
@@ -116,6 +127,7 @@ public:
     float      const get_speed()          const { return m_speed;           };
     int        const get_width()          const { return m_width;           };
     int        const get_height()         const { return m_height;          };
+    bool       const is_active()          const { return m_is_active;}
 
     // ————— SETTERS ————— //
     void const set_entity_type(EntityType new_entity_type)  { m_entity_type = new_entity_type;      };
@@ -130,4 +142,5 @@ public:
     void const set_acceleration(glm::vec3 new_acceleration) { m_acceleration = new_acceleration;    };
     void const set_width(float new_width)                   { m_width = new_width;                  };
     void const set_height(float new_height)                 { m_height = new_height;                };
+    
 };
