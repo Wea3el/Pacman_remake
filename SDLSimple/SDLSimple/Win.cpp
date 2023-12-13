@@ -38,7 +38,7 @@ Win::~Win()
     Mix_FreeMusic(m_state.bgm);
 }
 
-void Win::initialise()
+void Win::initialise(int lives)
 {
     GLuint map_texture_id =  Utility::load_texture(MAP_TILESET_FILEPATH);
     m_state.map = new Map(WIN_WIDTH, WIN_HEIGHT, WIN_DATA, map_texture_id, 1.0f, 25, 24);

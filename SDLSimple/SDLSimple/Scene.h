@@ -38,7 +38,7 @@ public:
     
     GameState m_state;
     float cur_time = 0;
-    virtual void initialise() = 0;
+    virtual void initialise(int lives =0 ) = 0;
     virtual void update(float delta_time) = 0;
     virtual void render(ShaderProgram *program) = 0;
     

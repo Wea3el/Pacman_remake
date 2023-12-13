@@ -55,7 +55,7 @@ LevelB *g_levelB;
 Win *win;
 Lose *lose;
 
-
+int player_lives = 3;
 
 Scene   *g_levels[4];
 
@@ -74,7 +74,16 @@ bool g_is_colliding_bottom = false;
 void switch_to_scene(Scene *scene)
 {
     g_current_scene = scene;
-    g_current_scene->initialise(); // DON'T FORGET THIS STEP!
+   
+    
+    if(g_current_scene == g_levelB){
+        player_lives -=1;
+        g_levelB->initialise(player_lives);
+    }
+    else {
+        g_current_scene->initialise(player_lives);
+    }
+    // DON'T FORGET THIS STEP!
 }
 
 void initialise()
@@ -118,10 +127,11 @@ void initialise()
     g_levels[0] = g_levelA;
     g_levels[1] = win;
     g_levels[2] = lose;
-    
+    g_levels[3] = g_levelB;
     
     // Start at level A
     switch_to_scene(g_levels[0]);
+    
     
     
     
@@ -160,31 +170,33 @@ void process_input()
     }
     
     const Uint8 *key_state = SDL_GetKeyboardState(NULL);
-
-    if (key_state[SDL_SCANCODE_LEFT])
-    {
-        
-        g_current_scene->m_state.player->move_left();
-        g_current_scene->m_state.player->m_animation_indices = g_current_scene->m_state.player->m_walking[g_current_scene->m_state.player->LEFT];
+    if( g_current_scene  != g_levelB){
+        if (key_state[SDL_SCANCODE_LEFT])
+        {
+            
+            g_current_scene->m_state.player->move_left();
+            g_current_scene->m_state.player->m_animation_indices = g_current_scene->m_state.player->m_walking[g_current_scene->m_state.player->LEFT];
+        }
+        else if (key_state[SDL_SCANCODE_RIGHT])
+        {
+            
+            g_current_scene->m_state.player->move_right();
+            g_current_scene->m_state.player->m_animation_indices = g_current_scene->m_state.player->m_walking[g_current_scene->m_state.player->RIGHT];
+        }
+        else if (key_state[SDL_SCANCODE_UP])
+        {
+            
+            g_current_scene->m_state.player->move_up();
+            g_current_scene->m_state.player->m_animation_indices = g_current_scene->m_state.player->m_walking[g_current_scene->m_state.player->UP];
+        }
+        else if (key_state[SDL_SCANCODE_DOWN])
+        {
+            
+            g_current_scene->m_state.player->move_down();
+            g_current_scene->m_state.player->m_animation_indices = g_current_scene->m_state.player->m_walking[g_current_scene->m_state.player->DOWN];
+        }
     }
-    else if (key_state[SDL_SCANCODE_RIGHT])
-    {
-        
-        g_current_scene->m_state.player->move_right();
-        g_current_scene->m_state.player->m_animation_indices = g_current_scene->m_state.player->m_walking[g_current_scene->m_state.player->RIGHT];
-    }
-    else if (key_state[SDL_SCANCODE_UP])
-    {
-        
-        g_current_scene->m_state.player->move_up();
-        g_current_scene->m_state.player->m_animation_indices = g_current_scene->m_state.player->m_walking[g_current_scene->m_state.player->UP];
-    }
-    else if (key_state[SDL_SCANCODE_DOWN])
-    {
-        
-        g_current_scene->m_state.player->move_down();
-        g_current_scene->m_state.player->m_animation_indices = g_current_scene->m_state.player->m_walking[g_current_scene->m_state.player->DOWN];
-    }
+    
     
     if (glm::length(g_current_scene->m_state.player->get_movement()) > 1.0f)
     {
@@ -258,7 +270,10 @@ int main(int argc, char* argv[])
         process_input();
         update();
         
-        if (g_current_scene->m_state.next_scene_id >= 0) switch_to_scene(g_levels[g_current_scene->m_state.next_scene_id]);
+        if (g_current_scene->m_state.next_scene_id >= 0){
+            switch_to_scene(g_levels[g_current_scene->m_state.next_scene_id]);
+            
+        }
         
         render();
     }

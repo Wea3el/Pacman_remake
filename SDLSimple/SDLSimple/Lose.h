@@ -7,10 +7,10 @@ public:
     
     // ————— CONSTRUCTOR ————— //
     ~Lose();
-    
+    int ENEMY_COUNT = 4;
     // ————— METHODS ————— //
-    void initialise() override;
-    void update(float delta_time) override;
+    void initialise(int lives) override;
+    void update(float delta_time) ;
     void render(ShaderProgram *program) override;
 };
 

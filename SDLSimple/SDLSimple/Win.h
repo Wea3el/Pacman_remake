@@ -8,7 +8,7 @@ public:
     ~Win();
     
     // ————— METHODS ————— //
-    void initialise() override;
+    void initialise(int lives) override;
     void update(float delta_time) override;
     void render(ShaderProgram *program) override;
 };

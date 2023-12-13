@@ -45,7 +45,7 @@ public:
     bool die = false;
     bool power = false;
     float powerup_time = 0;
-    
+    int lives = 3;
     
     static const int    SECONDS_PER_FRAME = 4;
     static const int    LEFT    = 0,

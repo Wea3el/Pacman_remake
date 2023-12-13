@@ -13,7 +13,7 @@ unsigned int LEVELA_DATA[] =
     0, 5, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 5,
     0, 5, 0, 6, 2, 2, 7, 0, 1, 2, 2, 2, 2, 2, 2, 2, 2, 3, 0, 6, 2, 2, 7, 0, 5,
     0, 5, 0, 11,2, 2,12, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 11,2, 2,12, 0, 5,
-    0, 5, 0, 0, 0, 0, 0, 0, 6, 9, 2, 2, 0, 0, 2, 2, 9, 7, 0, 0, 0, 0, 0, 0, 5,
+    0, 5, 0, 0, 0, 0, 0, 0, 6, 9, 2, 2, 2, 2, 2, 2, 9, 7, 0, 0, 0, 0, 0, 0, 5,
     0,11, 2, 2, 2, 2, 3, 0, 8,14, 0, 0, 0, 0, 0, 0, 8,14, 0, 1, 2, 2, 2, 2,12,
     0, 0, 0, 0, 0, 0, 0, 0, 8,14, 0, 0, 0, 0, 0, 0, 8,14, 0, 0, 0, 0, 0, 0, 0,
     0, 0, 0, 0, 0, 0, 0, 0,11,13, 2, 2, 2, 2, 2, 2,13,12, 0, 0, 0, 0, 0, 0, 0,
@@ -41,7 +41,7 @@ LevelA::~LevelA()
 }
 
 
-void LevelA::initialise()
+void LevelA::initialise(int lives)
 {
 
     m_state.next_scene_id = -1;
@@ -59,8 +59,8 @@ void LevelA::initialise()
     m_state.player->set_entity_type(PLAYER);
     m_state.player->set_position(glm::vec3(12.0f, -11.0f, 0.0f));
     m_state.player->set_movement(glm::vec3(0.0f));
-    m_state.player->set_speed(5.0f);
-    m_state.player->set_acceleration(glm::vec3(0.0f, -9.81f, 0.0f));
+    m_state.player->set_speed(2.0f);
+    
     m_state.player->m_texture_id = Utility::load_texture("assets/Pacman.png");
     
     // Walking
@@ -89,12 +89,16 @@ void LevelA::initialise()
     GLuint dot_texture = Utility::load_texture("assets/dot.png");
     GLuint power_texture = Utility::load_texture("assets/powerup.png");
     GLuint ghost_texture = Utility::load_texture("assets/ghostDie.png");
-    
-    m_state.enemies = new Entity[189];
-    
+    if(lives == 3){
+        m_state.enemies = new Entity[189];
+        
+    }
+   
    
     ENEMY_COUNT = 4;
 
+    cur = 0;
+    dot_count = 0;
     //top_right accross
     for(int i = 0; i < 10; i++){
         m_state.enemies[i+cur].m_texture_id = dot_texture;
@@ -179,8 +183,7 @@ void LevelA::initialise()
     m_state.enemies[cur].set_ai_type(POWERUP);
     m_state.enemies[cur].m_texture_id = power_texture;
     
-    m_state.enemies[21+cur].set_ai_type(POWERUP);
-    m_state.enemies[21+cur].m_texture_id = power_texture;
+ 
     cur += dot_count;
     dot_count = 0;
     
@@ -327,7 +330,7 @@ void LevelA::initialise()
     }
     cur += dot_count;
     dot_count = 0;
-    std::cout << cur << std::endl;
+    
     ENEMY_COUNT += cur;
     for(int i = 4; i < ENEMY_COUNT; i++){
         
@@ -362,6 +365,12 @@ void LevelA::initialise()
     m_state.enemies[cur+2].m_texture_id = bliky_texture;
     m_state.enemies[cur+3].m_texture_id = pinky_texture;
     m_state.player->dot_count = cur-5;
+    for(int i = 0; i < ENEMY_COUNT; i++){
+        if(!m_state.enemies[i].is_active()){
+            m_state.player->dot_count -=1;
+        }
+    }
+    std::cout <<  m_state.player->dot_count << std::endl;
 
     /**
      BGM and SFX
@@ -405,9 +414,9 @@ void LevelA::update(float delta_time)
     m_state.player->update(delta_time, m_state.player, m_state.enemies, ENEMY_COUNT, m_state.map);
     for (int i = 0; i < ENEMY_COUNT; i++) m_state.enemies[i].update(delta_time, m_state.player, NULL, 0, m_state.map);
     if (m_state.player->dot_count == 0) m_state.next_scene_id = 1;
-    if(m_state.player->die) m_state.next_scene_id = 2;
+    if(m_state.player->die) m_state.next_scene_id = 3;
     if(m_state.player->eat){
-        std::cout << m_state.player->dot_count << std::endl;
+        
             m_state.player->eat= false;
             Mix_PlayChannel(1, m_state.monch_sfx1, 0);
             Mix_Volume(1, 10);
@@ -429,6 +438,7 @@ void LevelA::update(float delta_time)
     }else{
         Mix_HaltChannel(2);
         Mix_ResumeMusic();
+        m_state.player->powerup_time =0;
         for(int i = cur; i < ENEMY_COUNT; i++){
             
             m_state.enemies[i].set_speed(2.0f);

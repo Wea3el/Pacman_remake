@@ -160,9 +160,10 @@ void Entity::update(float delta_time, Entity* player, Entity* objects, int objec
     m_collided_bottom = false;
     m_collided_left = false;
     m_collided_right = false;
+    
     if (m_animation_indices != NULL)
     {
-        if (glm::length(m_movement) != 0)
+        if (glm::length(m_movement) != 0 || sizeof(m_walking[player->RIGHT]) > 7)
         {
             m_animation_time += delta_time;
             float frames_per_second = (float)1 / SECONDS_PER_FRAME;
@@ -223,7 +224,7 @@ void const Entity::check_collision_y(Entity* collidable_entities, int collidable
                 collidable_entity->deactivate();
                 break;
             }else if (power){
-                collidable_entity->set_position(glm::vec3(12.0f,-6.0f,1.0f));
+                collidable_entity->set_position(glm::vec3(10.0f,-6.0f,1.0f));
                 break;
             }else if(!power){
                 die = true;
@@ -265,7 +266,7 @@ void const Entity::check_collision_x(Entity* collidable_entities, int collidable
                 collidable_entity->deactivate();
                 break;
             }else if (power){
-                collidable_entity->set_position(glm::vec3(13.0f,-8.0f,1.0f));
+                collidable_entity->set_position(glm::vec3(11.0f,-8.0f,1.0f));
                 break;
             }else if(!power){
                 die = true;
