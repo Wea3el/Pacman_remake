@@ -24,6 +24,7 @@
 		448CAD292B243D270067806F /* SDL2_image.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 448CAD262B243D270067806F /* SDL2_image.framework */; };
 		448CAD2A2B243D270067806F /* SDL2.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 448CAD272B243D270067806F /* SDL2.framework */; };
 		448CAD2B2B243D270067806F /* SDL2_mixer.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 448CAD282B243D270067806F /* SDL2_mixer.framework */; };
+		44E93E8D2B2AB5D100BB7E5A /* Menu.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 44E93E8B2B2AB5D000BB7E5A /* Menu.cpp */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -71,6 +72,8 @@
 		448CAD262B243D270067806F /* SDL2_image.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SDL2_image.framework; path = ../../../../../../../../Library/Frameworks/SDL2_image.framework; sourceTree = "<group>"; };
 		448CAD272B243D270067806F /* SDL2.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SDL2.framework; path = ../../../../../../../../Library/Frameworks/SDL2.framework; sourceTree = "<group>"; };
 		448CAD282B243D270067806F /* SDL2_mixer.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SDL2_mixer.framework; path = ../../../../../../../../Library/Frameworks/SDL2_mixer.framework; sourceTree = "<group>"; };
+		44E93E8B2B2AB5D000BB7E5A /* Menu.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Menu.cpp; sourceTree = "<group>"; };
+		44E93E8C2B2AB5D100BB7E5A /* Menu.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Menu.h; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -109,6 +112,8 @@
 		448CAD192B243CF90067806F /* SDLSimple */ = {
 			isa = PBXGroup;
 			children = (
+				44E93E8B2B2AB5D000BB7E5A /* Menu.cpp */,
+				44E93E8C2B2AB5D100BB7E5A /* Menu.h */,
 				443FB0DC2B24EA9400DF45FC /* Scene.cpp */,
 				443FB0DD2B24EA9400DF45FC /* Scene.h */,
 				443FB0D92B24E9BC00DF45FC /* Entity.cpp */,
@@ -210,6 +215,7 @@
 				443FB0C32B24E87700DF45FC /* Map.cpp in Sources */,
 				443FB0CC2B24E8BE00DF45FC /* Win.cpp in Sources */,
 				443FB0D72B24E94200DF45FC /* LevelA.cpp in Sources */,
+				44E93E8D2B2AB5D100BB7E5A /* Menu.cpp in Sources */,
 				443FB0D82B24E94200DF45FC /* LevelB.cpp in Sources */,
 				448CAD1B2B243CF90067806F /* main.cpp in Sources */,
 				443FB0DB2B24E9BC00DF45FC /* Entity.cpp in Sources */,

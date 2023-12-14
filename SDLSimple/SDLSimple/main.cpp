@@ -1,3 +1,13 @@
+/**
+* Author: [Wesley
+* Assignment: [Pace-man]
+* Date due: 2023-12-15, 11:59pm
+* I pledge that I have completed this assignment without
+* collaborating with anyone else, in conformance with the
+* NYU School of Engineering Policies and Procedures on
+* Academic Misconduct.
+**/
+
 #define GL_SILENCE_DEPRECATION
 #define GL_GLEXT_PROTOTYPES 1
 #define FIXED_TIMESTEP 0.0166666f
@@ -26,7 +36,7 @@
 #include "LevelB.h"
 #include "Win.h"
 #include "Lose.h"
-
+#include "Menu.h"
 
 // ––––– CONSTANTS ––––– //
 const int WINDOW_WIDTH  = 640,
@@ -54,10 +64,11 @@ LevelA *g_levelA;
 LevelB *g_levelB;
 Win *win;
 Lose *lose;
+Menu *menu;
 
 int player_lives = 3;
 
-Scene   *g_levels[4];
+Scene   *g_levels[5];
 
 SDL_Window* g_display_window;
 bool g_game_is_running = true;
@@ -124,13 +135,15 @@ void initialise()
     g_levelB = new LevelB();
     win = new Win();
     lose = new Lose();
+    menu = new Menu();
     g_levels[0] = g_levelA;
     g_levels[1] = win;
     g_levels[2] = lose;
     g_levels[3] = g_levelB;
+    g_levels[4] = menu;
     
     // Start at level A
-    switch_to_scene(g_levels[0]);
+    switch_to_scene(g_levels[4]);
     
     
     
@@ -159,7 +172,13 @@ void process_input()
                         g_game_is_running = false;
                         break;
                         
-                        
+                    case SDLK_RETURN:
+                        if (g_current_scene == g_levels[4])
+                        {
+                            g_current_scene->update(-1);
+
+                        }
+                        break;
                     default:
                         break;
                 }
@@ -170,7 +189,7 @@ void process_input()
     }
     
     const Uint8 *key_state = SDL_GetKeyboardState(NULL);
-    if( g_current_scene  != g_levelB){
+    if( g_current_scene  != g_levelB    ){
         if (key_state[SDL_SCANCODE_LEFT])
         {
             

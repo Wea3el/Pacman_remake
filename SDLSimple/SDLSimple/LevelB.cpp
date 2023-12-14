@@ -57,7 +57,7 @@ void LevelB::initialise(int thing)
     
     // Walking
     
-    m_state.player->m_walking[m_state.player->RIGHT] = new int[11] {1, 2,3,4,5,6,7,8,9,10,11};
+    m_state.player->m_walking[m_state.player->RIGHT] = new int[12] {1, 2,3,4,5,6,7,8,9,10,11,12};
     m_state.player->m_walking[m_state.player->LEFT] = new int[1]{0};
     
     m_state.player->m_animation_indices = m_state.player->m_walking[m_state.player->RIGHT];  // start George looking left
@@ -69,6 +69,9 @@ void LevelB::initialise(int thing)
     m_state.player->set_height(0.7f);
     m_state.player->set_width(0.7f);
     
+    m_state.bgm = Mix_LoadMUS("assets/death_1.wav");
+    
+    Mix_PlayMusic(m_state.bgm, -1);
 }
 
 void LevelB::update(float delta_time)
@@ -78,7 +81,7 @@ void LevelB::update(float delta_time)
     if(m_state.player->m_animation_index == 10){
         m_state.player->deactivate();
         if(lives == 0){
-            
+            Mix_PauseMusic();
             m_state.next_scene_id = 2;
         }else{
             std::cout << lives << std::endl;

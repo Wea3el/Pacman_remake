@@ -29,7 +29,7 @@ Lose::~Lose()
     Mix_FreeMusic(m_state.bgm);
 }
 
-void Lose::initialise()
+void Lose::initialise(int lives)
 {
     GLuint map_texture_id = Utility::load_texture("assets/tilesset.png");
     m_state.map = new Map(LOSE_WIDTH, LOSE_HEIGHT, LOSE_DATA, map_texture_id, 1, 5, 3);
