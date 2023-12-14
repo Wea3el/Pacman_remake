@@ -53,18 +53,18 @@ void LevelB::initialise(int thing)
     m_state.player->set_movement(glm::vec3(0.0f));
     m_state.player->set_speed(2.5f);
     m_state.player->set_position(glm::vec3(12.0f, -11.0f, 0.0f));
-    m_state.player->m_texture_id = Utility::load_texture("assets/deadPacman.png");
+    m_state.player->m_texture_id = Utility::load_texture("assets/pacmanDying.png");
     
     // Walking
     
-    m_state.player->m_walking[m_state.player->RIGHT] = new int[12] {1, 2,3,4,5,6,7,8,9,10,11,12};
+    m_state.player->m_walking[m_state.player->RIGHT] = new int[11] {0,1,2,3,4,5,6,7,8,9,10};
     m_state.player->m_walking[m_state.player->LEFT] = new int[1]{0};
     
     m_state.player->m_animation_indices = m_state.player->m_walking[m_state.player->RIGHT];  // start George looking left
     m_state.player->m_animation_frames = 11;
     m_state.player->m_animation_index  = 0;
     m_state.player->m_animation_time   = 0.0f;
-    m_state.player->m_animation_cols   = 12;
+    m_state.player->m_animation_cols   = 11;
     m_state.player->m_animation_rows   = 1;
     m_state.player->set_height(0.7f);
     m_state.player->set_width(0.7f);
@@ -76,19 +76,20 @@ void LevelB::initialise(int thing)
 
 void LevelB::update(float delta_time)
 {
-    m_state.player->update(delta_time, m_state.player, NULL, 0, m_state.map);
-    
     if(m_state.player->m_animation_index == 10){
-        m_state.player->deactivate();
+        
         if(lives == 0){
             Mix_PauseMusic();
             m_state.next_scene_id = 2;
         }else{
-            std::cout << lives << std::endl;
+            
             m_state.next_scene_id = 0;
         }
         
     }
+    m_state.player->update(delta_time, m_state.player, NULL, 0, m_state.map);
+    
+    
     
    
    

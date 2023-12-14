@@ -189,7 +189,7 @@ void process_input()
     }
     
     const Uint8 *key_state = SDL_GetKeyboardState(NULL);
-    if( g_current_scene  != g_levelB    ){
+    if( g_current_scene  != g_levelB &&g_current_scene  != menu){
         if (key_state[SDL_SCANCODE_LEFT])
         {
             

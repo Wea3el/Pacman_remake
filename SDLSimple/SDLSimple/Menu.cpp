@@ -31,8 +31,13 @@ Menu::~Menu()
 
 void Menu::initialise(int thing)
 {
+    
+    
     GLuint map_texture_id = Utility::load_texture("assets/tilesset.png");
     m_state.map = new Map(LEVEL2_WIDTH, LEVEL2_HEIGHT, LEVEL_2_DATA, map_texture_id, 1.0f, 25, 24);
+    
+    
+    
     m_state.next_scene_id = -1;
 
     m_state.player = new Entity();
@@ -112,6 +117,7 @@ void Menu::update(float delta_time)
 {
     m_state.player->move_left();
     for (int i = 0; i < 4; i++) m_state.enemies[i].update(delta_time, m_state.player, NULL, 0, m_state.map);
+  
     if (delta_time == -1) {
            m_state.next_scene_id = 0;
        }
@@ -130,6 +136,7 @@ void Menu::render(ShaderProgram *program)
             m_state.enemies[i].render(program);
         }
     }
+    
     m_state.player->render(program);
     Utility::draw_text(program, text_texture_id, "PACEMAN",  1.0f, -0.1f,glm::vec3(10.0f, -9.0f, 0.0f));
     Utility::draw_text(program, text_texture_id, "PRESS ENTER TO START",  1.0f, -0.1f,glm::vec3(4.0f, -12.0f, 0.0f));

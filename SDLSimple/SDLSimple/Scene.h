@@ -22,7 +22,7 @@ struct GameState
     Entity *player;
     Entity *enemies;
     
-    
+    Entity *lives;
     Mix_Music *bgm;
     
     Mix_Chunk *bgm2;

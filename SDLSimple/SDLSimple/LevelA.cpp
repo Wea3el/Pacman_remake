@@ -55,11 +55,12 @@ void LevelA::initialise(int lives)
      */
     
     // Existing
+    
     m_state.player = new Entity();
     m_state.player->set_entity_type(PLAYER);
     m_state.player->set_position(glm::vec3(12.0f, -11.0f, 0.0f));
     m_state.player->set_movement(glm::vec3(0.0f));
-    m_state.player->set_speed(10.0f);
+    m_state.player->set_speed(2.0f);
     
     m_state.player->m_texture_id = Utility::load_texture("assets/Pacman.png");
     
@@ -180,9 +181,7 @@ void LevelA::initialise(int lives)
         dot_count++;
     }
     
-    m_state.enemies[cur].set_ai_type(POWERUP);
-    m_state.enemies[cur].m_texture_id = power_texture;
-    
+   
  
     cur += dot_count;
     dot_count = 0;
@@ -343,7 +342,7 @@ void LevelA::initialise(int lives)
         m_state.enemies[i].set_ai_state(GO_LEFT);
         
         m_state.enemies[i].set_position(glm::vec3((ENEMY_COUNT-i)+10, -9.0f, 0.0f));
-        m_state.enemies[i].set_speed(2.0f);
+        m_state.enemies[i].set_speed(3.0f);
         
         m_state.enemies[i].m_walking[Entity::LEFT]  = new int[2] {2, 3};
         m_state.enemies[i].m_walking[Entity::RIGHT] = new int[2] {0, 1};
@@ -370,7 +369,18 @@ void LevelA::initialise(int lives)
             m_state.player->dot_count -=1;
         }
     }
-    
+    m_state.lives = new Entity [3];
+    GLuint lives_texture = Utility::load_texture("assets/life.png");
+    for(int i = 0; i < 3; i++){
+        m_state.lives[i].set_entity_type(LIVES);
+        m_state.lives[i].set_width(0.7f);
+        m_state.lives[i].set_height(0.7f);
+        m_state.lives[i].set_position(glm::vec3(1.0f+i, -19.0f, 0.0f));
+        m_state.lives[i].m_texture_id = lives_texture;
+    }
+    for(int i = lives; i < 3; i++){
+        m_state.lives[i].deactivate();
+    }
 
     /**
      BGM and SFX
@@ -460,6 +470,8 @@ void LevelA::update(float delta_time)
         m_state.player->set_position(glm::vec3(0.0f,m_state.player->get_position().y,1.0f));
     }
     
+    for (int i = 0; i < 3; i++) m_state.lives[i].update(delta_time, m_state.player, NULL, 0, m_state.map);
+    
 }
 
 void LevelA::render(ShaderProgram *program)
@@ -471,5 +483,11 @@ void LevelA::render(ShaderProgram *program)
             m_state.enemies[i].render(program);
         }
             
+    }
+    
+    for (int i = 0; i < 3; i++){
+        if(m_state.lives[i].is_active()){
+            m_state.lives[i].render(program);
+        }
     }
 }
