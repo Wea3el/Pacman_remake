@@ -224,6 +224,7 @@ void const Entity::check_collision_y(Entity* collidable_entities, int collidable
                 collidable_entity->deactivate();
                 break;
             }else if (power){
+                collidable_entity->die = true;
                 collidable_entity->set_position(glm::vec3(10.0f,-6.0f,1.0f));
                 break;
             }else if(!power){
@@ -266,6 +267,7 @@ void const Entity::check_collision_x(Entity* collidable_entities, int collidable
                 collidable_entity->deactivate();
                 break;
             }else if (power){
+                collidable_entity->die = true; 
                 collidable_entity->set_position(glm::vec3(11.0f,-8.0f,1.0f));
                 break;
             }else if(!power){

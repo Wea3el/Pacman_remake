@@ -89,7 +89,7 @@ void switch_to_scene(Scene *scene)
     
     if(g_current_scene == g_levelB){
         player_lives -=1;
-        g_levelB->initialise(player_lives);
+        g_levelB->initialise(player_lives,g_levelA->m_state.player->get_position());
     }
     else {
         g_current_scene->initialise(player_lives);

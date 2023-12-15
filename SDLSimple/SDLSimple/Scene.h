@@ -27,6 +27,7 @@ struct GameState
     
     Mix_Chunk *bgm2;
     Mix_Chunk *monch_sfx1;
+    Mix_Chunk *death_noise; 
     
     
     int next_scene_id;

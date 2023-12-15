@@ -344,6 +344,7 @@ void LevelA::initialise(int lives)
         m_state.enemies[i].set_position(glm::vec3((ENEMY_COUNT-i)+10, -9.0f, 0.0f));
         m_state.enemies[i].set_speed(3.0f);
         
+        
         m_state.enemies[i].m_walking[Entity::LEFT]  = new int[2] {2, 3};
         m_state.enemies[i].m_walking[Entity::RIGHT] = new int[2] {0, 1};
         m_state.enemies[i].m_walking[Entity::UP]    = new int[2] {4, 5};
@@ -398,6 +399,8 @@ void LevelA::initialise(int lives)
     Mix_ResumeMusic();
     m_state.monch_sfx1 = Mix_LoadWAV("assets/munch.wav");
     
+    m_state.death_noise = Mix_LoadWAV("assets/eat_ghost.wav");
+    
     
 }
 
@@ -407,10 +410,10 @@ void LevelA::update(float delta_time)
     GLuint pinky_texture = Utility::load_texture("assets/pinky.png");
     GLuint clyde_texture = Utility::load_texture("assets/clyde.png");
     GLuint inky_texture = Utility::load_texture("assets/inky.png");
-    GLuint dot_texture = Utility::load_texture("assets/dot.png");
+    
     GLuint ghost_texture = Utility::load_texture("assets/ghostDie.png");
     cur_time += delta_time;
-    if(cur_time > 10){
+    if(cur_time > 5){
         cur_time = 0;
         
         for(int i = cur; i < ENEMY_COUNT; i++){
@@ -443,6 +446,12 @@ void LevelA::update(float delta_time)
             m_state.enemies[i].set_speed(0.5f);
             m_state.enemies[i].m_texture_id = ghost_texture;
             m_state.enemies[i].m_animation_cols   = 2;
+            if(m_state.enemies[i].die){
+                m_state.enemies[i].die = false;
+                Mix_PlayChannel(3, m_state.death_noise, 0);
+                Mix_Volume(3, 50);
+                cur_time = 0;
+            }
         }
         if(m_state.player->powerup_time >10){
             m_state.player->power = false;

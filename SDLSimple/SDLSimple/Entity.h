@@ -26,7 +26,7 @@ private:
     float     m_speed;
     glm::vec3 m_movement;
     glm::mat4 m_model_matrix;
-    glm::vec3 m_scale = glm::vec3(0.7f, 0.7f,0.0f);
+    glm::vec3 m_scale = glm::vec3(0.75f, 0.75f,0.0f);
 
 
     // ————— ENEMY AI ————— //
